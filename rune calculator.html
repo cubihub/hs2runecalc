@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Siege Rune Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1D1D2E; /* Dunkelblau */
+      color: #D4D4D4; /* Hellgrau für Text */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #FFFFFF; /* Weiß */
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      width: 100%;
+      max-width: 1400px; /* Breitere Ansicht */
+    }
+
+    .calculator, .explanation {
+      background: #272738; /* Etwas helleres Blau */
+      padding: 30px; /* Größerer Padding für große Boxen */
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      min-height: 500px; /* Mindesthöhe für größere Boxen */
+    }
+
+    .inventory-calculator {
+      background: #272738; /* Etwas helleres Blau */
+      padding: 30px; /* Größerer Padding */
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 700px; /* Breitere Box */
+      text-align: center;
+      min-height: 500px;
+    }
+
+    select, button, input {
+      margin: 15px 0;
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      border: 1px solid #373747; /* Mittelgraublau */
+      border-radius: 4px;
+      background-color: #484856; /* Graublau */
+      color: #FFFFFF; /* Weiß */
+    }
+
+    button {
+      background: #575866; /* Hellgraublau */
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #6C6C80; /* Etwas helleres Graublau */
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #FFFFFF; /* Weiß für Ergebnisse */
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5 Spalten */
+      gap: 10px;
+    }
+
+    .inventory-item label {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #FFFFFF; /* Weiß */
+    }
+
+    .inventory-item input {
+      width: 60px;
+      text-align: center;
+      background-color: #484856; /* Graublau */
+      color: #FFFFFF; /* Weiß */
+      border: 1px solid #373747;
+    }
+
+    .checkbox-container label {
+      font-size: 16px;
+      color: #D4D4D4; /* Hellgrau */
+    }
+  </style>
+</head>
+<body>
+  <h1>Hero Siege Rune Calculator</h1>
+
+  <div class="container">
+    <!-- Explanation Section -->
+    <div class="explanation">
+      <h2>What does this tool do?</h2>
+      <p>This tool helps you efficiently manage and combine runes in the game <strong>Hero Siege</strong>.</p>
+      <p>It has two main sections:</p>
+      <ul>
+        <li><strong>Rune Calculator:</strong> Select a starting rune and a target rune to calculate how many runes you need to craft the target rune.</li>
+        <li><strong>Inventory Rune Calculator:</strong> Enter your current rune inventory to see how many target runes you can craft.</li>
+      </ul>
+      <p>With the "Show Remaining Runes" option, you can also see the leftover runes after the maximum number of target runes has been crafted.</p>
+    </div>
+
+    <!-- Simple Rune Calculator -->
+    <div class="calculator">
+      <h2>Rune Calculator</h2>
+      <label for="start-rune">Select Starting Rune:</label>
+      <select id="start-rune"></select>
+
+      <label for="target-rune">Select Target Rune:</label>
+      <select id="target-rune"></select>
+
+      <button onclick="calculateRunes()">Calculate</button>
+      <div class="result" id="result"></div>
+    </div>
+
+    <!-- Inventory Rune Calculator -->
+    <div class="inventory-calculator">
+      <h2>Inventory Rune Calculator</h2>
+      <div class="inventory-grid" id="inventory-inputs"></div>
+      <label for="target-select">Select target rune (optional):</label>
+      <select id="target-select">
+        <option value="highest">Highest</option>
+      </select>
+      <div class="checkbox-container">
+        <input type="checkbox" id="show-remaining" checked>
+        <label for="show-remaining">Show Remaining Runes</label>
+      </div>
+      <button onclick="calculateMaxRunes()">Calculate Max Runes</button>
+      <div class="result" id="inventory-result"></div>
+    </div>
+  </div>
+
+  <script>
+    const runes = [
+      "Ol", "Old", "Tor", "Naf", "Eth", "Uth", "Tul", "Rex", "Ert", "Thal",
+      "Ymn", "Sal", "Nut", "Del", "Hel", "Io", "Lum", "Co", "Fel", "Lem",
+      "Pul", "Um", "Mal", "Ist", "Gul", "Vex", "Qi", "Xo", "Sur", "Ber",
+      "Jah", "Drax", "Zed"
+    ];
+
+    // Populate dropdowns
+    const startRuneSelect = document.getElementById("start-rune");
+    const targetRuneSelect = document.getElementById("target-rune");
+    const targetSelectInventory = document.getElementById("target-select");
+
+    runes.forEach((rune, index) => {
+      const optionStart = document.createElement("option");
+      optionStart.value = index;
+      optionStart.textContent = rune;
+      startRuneSelect.appendChild(optionStart);
+
+      const optionTarget = document.createElement("option");
+      optionTarget.value = index;
+      optionTarget.textContent = rune;
+      targetRuneSelect.appendChild(optionTarget);
+
+      const optionInventory = document.createElement("option");
+      optionInventory.value = index;
+      optionInventory.textContent = rune;
+      targetSelectInventory.appendChild(optionInventory);
+    });
+
+    function calculateRunes() {
+      const startIndex = parseInt(startRuneSelect.value);
+      const targetIndex = parseInt(targetRuneSelect.value);
+
+      if (startIndex >= targetIndex) {
+        document.getElementById('result').textContent = "Target rune must be higher than the starting rune.";
+        return;
+      }
+
+      let totalRunes = 1;
+      for (let i = startIndex; i < targetIndex; i++) {
+        totalRunes *= 3;
+      }
+
+      const startRuneName = runes[startIndex];
+      const targetRuneName = runes[targetIndex];
+
+      document.getElementById('result').textContent =
+        `You need ${totalRunes} ${startRuneName} runes to craft one ${targetRuneName} rune.`;
+    }
+
+    const inventoryInputs = document.getElementById("inventory-inputs");
+    runes.forEach((rune, index) => {
+      const inputDiv = document.createElement("div");
+      inputDiv.className = "inventory-item";
+      inputDiv.innerHTML = `
+        <label for="rune-${index}">${rune}</label>
+        <input type="number" id="rune-${index}" min="0" value="0">
+      `;
+      inventoryInputs.appendChild(inputDiv);
+    });
+
+    function calculateMaxRunes() {
+      const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
+      const targetRune = targetSelectInventory.value;
+      let maxCraftable = 0;
+
+      for (let i = 0; i < runeCounts.length - 1; i++) {
+        const craftable = Math.floor(runeCounts[i] / 3);
+        runeCounts[i + 1] += craftable;
+        runeCounts[i] %= 3;
+      }
+
+      if (targetRune === "highest") {
+        maxCraftable = runeCounts[runeCounts.length - 1];
+      } else {
+        maxCraftable = runeCounts[parseInt(targetRune)];
+      }
+
+      const remainingInventory = runes
+        .map((rune, index) => ({ rune, count: runeCounts[index] }))
+        .filter(item => item.count > 0)
+        .map(item => `${item.rune}: ${item.count}`)
+        .join(', ');
+
+      const showRemaining = document.getElementById("show-remaining").checked;
+      const resultText = showRemaining
+        ? `You can craft ${maxCraftable} runes. Remaining Runes: ${remainingInventory}`
+        : `You can craft ${maxCraftable} runes.`;
+
+      document.getElementById("inventory-result").textContent = resultText;
+    }
+  </script>
+</body>
+</html>
