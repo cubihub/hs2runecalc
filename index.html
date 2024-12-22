@@ -5,102 +5,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hero Siege Rune Calculator</title>
   <style>
-	body {
-	  font-family: Arial, sans-serif;
-	  margin: 0;
-	  padding: 0;
-	  background-color: #1D1D2E;
-	  color: #D4D4D4;
-	  display: flex;
-	  flex-direction: column;
-	  align-items: center;
-	  justify-content: flex-start;
-	  min-height: 100vh;
-	  padding: 10px; /* Reduziertes Padding */
-	}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1D1D2E; /* Dunkelblau */
+      color: #D4D4D4; /* Hellgrau für Text */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-	h1 {
-	  text-align: center;
-	  margin-bottom: 15px; /* Kleinere Abstände */
-	  color: #FFFFFF;
-	  font-size: 22px; /* Kleinere Schriftgröße */
-	}
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #FFFFFF; /* Weiß */
+    }
 
-	.container {
-	  display: flex;
-	  justify-content: space-between;
-	  gap: 15px; /* Reduziertes Gap */
-	  width: 100%;
-	  max-width: 1200px; /* Etwas schmaler */
-	}
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      width: 100%;
+      max-width: 1400px; /* Breitere Ansicht */
+    }
 
-	.calculator, .explanation, .inventory-calculator {
-	  background: #272738;
-	  padding: 20px; /* Weniger Padding */
-	  border-radius: 8px;
-	  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-	  width: 100%;
-	  max-width: 350px; /* Etwas schmaler */
-	  text-align: center;
-	  min-height: 450px; /* Weniger Höhe */
-	}
+    .calculator, .explanation {
+      background: #272738; /* Etwas helleres Blau */
+      padding: 30px; /* Größerer Padding für große Boxen */
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      min-height: 500px; /* Mindesthöhe für größere Boxen */
+    }
 
-	.inventory-calculator {
-	  max-width: 600px; /* Etwas schmaler */
-	}
+    .inventory-calculator {
+      background: #272738; /* Etwas helleres Blau */
+      padding: 30px; /* Größerer Padding */
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 700px; /* Breitere Box */
+      text-align: center;
+      min-height: 500px;
+    }
 
-	select, button, input {
-	  margin: 10px 0; /* Kleinere Abstände */
-	  padding: 10px; /* Weniger Padding */
-	  font-size: 14px; /* Kleinere Schrift */
-	  width: 100%;
-	  border: 1px solid #373747;
-	  border-radius: 4px;
-	  background-color: #484856;
-	  color: #FFFFFF;
-	}
+    select, button, input {
+      margin: 15px 0;
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      border: 1px solid #373747; /* Mittelgraublau */
+      border-radius: 4px;
+      background-color: #484856; /* Graublau */
+      color: #FFFFFF; /* Weiß */
+    }
 
-	button {
-	  background: #575866;
-	  color: white;
-	  cursor: pointer;
-	}
+    button {
+      background: #575866; /* Hellgraublau */
+      color: white;
+      cursor: pointer;
+    }
 
-	button:hover {
-	  background: #6C6C80;
-	}
+    button:hover {
+      background: #6C6C80; /* Etwas helleres Graublau */
+    }
 
-	.result {
-	  margin-top: 15px; /* Kleinere Abstände */
-	  font-size: 16px; /* Kleinere Schrift */
-	  font-weight: bold;
-	  color: #FFFFFF;
-	}
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #FFFFFF; /* Weiß für Ergebnisse */
+    }
 
-	.inventory-grid {
-	  display: grid;
-	  grid-template-columns: repeat(5, 1fr); /* 5 Spalten */
-	  gap: 8px; /* Kleinere Lücken */
-	}
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5 Spalten */
+      gap: 10px;
+    }
 
-	.inventory-item label {
-	  font-size: 12px; /* Kleinere Schrift */
-	  margin-bottom: 3px;
-	  color: #FFFFFF;
-	}
+    .inventory-item label {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #FFFFFF; /* Weiß */
+    }
 
-	.inventory-item input {
-	  width: 50px; /* Weniger breit */
-	  text-align: center;
-	  background-color: #484856;
-	  color: #FFFFFF;
-	  border: 1px solid #373747;
-	}
+    .inventory-item input {
+      width: 60px;
+      text-align: center;
+      background-color: #484856; /* Graublau */
+      color: #FFFFFF; /* Weiß */
+      border: 1px solid #373747;
+    }
 
-	.checkbox-container label {
-	  font-size: 14px; /* Kleinere Schrift */
-	  color: #D4D4D4;
-	}
+    .checkbox-container label {
+      font-size: 16px;
+      color: #D4D4D4; /* Hellgrau */
+    }
   </style>
 </head>
 <body>
@@ -136,7 +142,7 @@
     <div class="inventory-calculator">
       <h2>Inventory Rune Calculator</h2>
       <div class="inventory-grid" id="inventory-inputs"></div>
-      <label for="target-select">Select target rune:</label>
+      <label for="target-select">Select target rune (optional):</label>
       <select id="target-select">
         <option value="highest">Highest</option>
       </select>
@@ -211,36 +217,46 @@
       inventoryInputs.appendChild(inputDiv);
     });
 
-    function calculateMaxRunes() {
-      const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
-      const targetRune = targetSelectInventory.value;
-      let maxCraftable = 0;
+function calculateMaxRunes() {
+  const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
+  const targetRuneIndex = targetSelectInventory.value === "highest" 
+    ? runeCounts.length - 1 
+    : parseInt(targetSelectInventory.value);
 
-      for (let i = 0; i < runeCounts.length - 1; i++) {
-        const craftable = Math.floor(runeCounts[i] / 3);
-        runeCounts[i + 1] += craftable;
-        runeCounts[i] %= 3;
-      }
+  const targetRuneName = runes[targetRuneIndex];
+  let maxCraftable = 0;
 
-      if (targetRune === "highest") {
-        maxCraftable = runeCounts[runeCounts.length - 1];
-      } else {
-        maxCraftable = runeCounts[parseInt(targetRune)];
-      }
+  // Clone runeCounts to perform crafting simulation
+  const tempRuneCounts = [...runeCounts];
 
-      const remainingInventory = runes
-        .map((rune, index) => ({ rune, count: runeCounts[index] }))
-        .filter(item => item.count > 0)
-        .map(item => `${item.rune}: ${item.count}`)
-        .join(', ');
+  // Calculate craftable runes ignoring pre-existing target runes
+  tempRuneCounts[targetRuneIndex] = 0; // Ignore existing target runes during calculation
 
-      const showRemaining = document.getElementById("show-remaining").checked;
-      const resultText = showRemaining
-        ? `You can craft ${maxCraftable} runes. Remaining Runes: ${remainingInventory}`
-        : `You can craft ${maxCraftable} runes.`;
+  for (let i = 0; i < tempRuneCounts.length - 1; i++) {
+    const craftable = Math.floor(tempRuneCounts[i] / 3);
+    tempRuneCounts[i + 1] += craftable;
+    tempRuneCounts[i] %= 3;
+  }
 
-      document.getElementById("inventory-result").textContent = resultText;
-    }
+  maxCraftable = tempRuneCounts[targetRuneIndex];
+
+  // Remaining inventory after crafting
+  const remainingInventory = runes
+    .map((rune, index) => ({
+      rune,
+      count: index === targetRuneIndex ? runeCounts[index] : tempRuneCounts[index], // Use original count for target rune
+    }))
+    .filter(item => item.count > 0)
+    .map(item => `${item.rune}: ${item.count}`)
+    .join(', ');
+
+  const showRemaining = document.getElementById("show-remaining").checked;
+  const resultText = showRemaining
+    ? `You can craft ${maxCraftable} ${targetRuneName} runes. Remaining Runes: ${remainingInventory}`
+    : `You can craft ${maxCraftable} ${targetRuneName} runes.`;
+
+  document.getElementById("inventory-result").textContent = resultText;
+}
   </script>
 </body>
 </html>
