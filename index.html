@@ -221,7 +221,7 @@
       inputDiv.className = "inventory-item";
       inputDiv.innerHTML = `
         <label for="rune-${index}">${rune}</label>
-        <input type="number" id="rune-${index}" min="0" value="0">
+        <input type="number" id="rune-${index}" min="0" max="999" value="0">
       `;
       inventoryInputs.appendChild(inputDiv);
     });
