@@ -9,103 +9,106 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #1D1D2E; /* Dunkelblau */
-      color: #D4D4D4; /* Hellgrau für Text */
+      background-color: #1D1D2E;
+      color: #D4D4D4;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
-      padding: 20px;
+      padding: 10px;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #FFFFFF; /* Weiß */
+      margin-bottom: 15px;
+      color: #FFFFFF;
+      font-size: 40px;
     }
 
     .container {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
+      gap: 15px;
       width: 100%;
-      max-width: 1400px; /* Breitere Ansicht */
+      max-width: 1200px;
     }
 
-    .calculator, .explanation {
-      background: #272738; /* Etwas helleres Blau */
-      padding: 30px; /* Größerer Padding für große Boxen */
+    .calculator, .explanation, .inventory-calculator {
+      background: #272738;
+      padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
       width: 100%;
-      max-width: 400px;
+      max-width: 350px;
       text-align: center;
-      min-height: 500px; /* Mindesthöhe für größere Boxen */
+      min-height: 450px;
     }
 
     .inventory-calculator {
-      background: #272738; /* Etwas helleres Blau */
-      padding: 30px; /* Größerer Padding */
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-      width: 100%;
-      max-width: 700px; /* Breitere Box */
-      text-align: center;
-      min-height: 500px;
+      max-width: 600px;
     }
 
     select, button, input {
-      margin: 15px 0;
-      padding: 12px;
-      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 14px;
       width: 100%;
-      border: 1px solid #373747; /* Mittelgraublau */
+      border: 1px solid #373747;
       border-radius: 4px;
-      background-color: #484856; /* Graublau */
-      color: #FFFFFF; /* Weiß */
+      background-color: #484856;
+      color: #FFFFFF;
     }
 
     button {
-      background: #575866; /* Hellgraublau */
+      background: #575866;
       color: white;
       cursor: pointer;
     }
 
     button:hover {
-      background: #6C6C80; /* Etwas helleres Graublau */
+      background: #6C6C80;
     }
 
     .result {
-      margin-top: 20px;
-      font-size: 18px;
+      margin-top: 15px;
+      font-size: 16px;
       font-weight: bold;
-      color: #FFFFFF; /* Weiß für Ergebnisse */
+      color: #FFFFFF;
     }
 
     .inventory-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr); /* 5 Spalten */
-      gap: 10px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
     }
 
     .inventory-item label {
-      font-size: 14px;
-      margin-bottom: 5px;
-      color: #FFFFFF; /* Weiß */
+      font-size: 12px;
+      margin-bottom: 3px;
+      color: #FFFFFF;
     }
 
     .inventory-item input {
-      width: 60px;
+      width: 50px;
       text-align: center;
-      background-color: #484856; /* Graublau */
-      color: #FFFFFF; /* Weiß */
+      background-color: #484856;
+      color: #FFFFFF;
       border: 1px solid #373747;
     }
 
     .checkbox-container label {
-      font-size: 16px;
-      color: #D4D4D4; /* Hellgrau */
+      font-size: 14px;
+      color: #D4D4D4;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      font-size: 12px;
+      color: #D4D4D4;
+      background-color: transparent;
     }
   </style>
 </head>
@@ -120,7 +123,8 @@
       <p>It has two main sections:</p>
       <ul>
         <li><strong>Rune Calculator:</strong> Select a starting rune and a target rune to calculate how many runes you need to craft the target rune.</li>
-        <li><strong>Inventory Rune Calculator:</strong> Enter your current rune inventory to see how many target runes you can craft.</li>
+        <br>
+		<li><strong>Inventory Rune Calculator:</strong> Enter your current rune inventory to see how many target runes you can craft.</li>
       </ul>
       <p>With the "Show Remaining Runes" option, you can also see the leftover runes after the maximum number of target runes has been crafted.</p>
     </div>
@@ -142,7 +146,7 @@
     <div class="inventory-calculator">
       <h2>Inventory Rune Calculator</h2>
       <div class="inventory-grid" id="inventory-inputs"></div>
-      <label for="target-select">Select target rune (optional):</label>
+      <label for="target-select">Select target rune:</label>
       <select id="target-select">
         <option value="highest">Highest</option>
       </select>
@@ -153,6 +157,11 @@
       <button onclick="calculateMaxRunes()">Calculate Max Runes</button>
       <div class="result" id="inventory-result"></div>
     </div>
+  </div>
+
+  <!-- Footer Section -->
+  <div class="footer">
+    made by jewome
   </div>
 
   <script>
@@ -217,46 +226,36 @@
       inventoryInputs.appendChild(inputDiv);
     });
 
-function calculateMaxRunes() {
-  const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
-  const targetRuneIndex = targetSelectInventory.value === "highest" 
-    ? runeCounts.length - 1 
-    : parseInt(targetSelectInventory.value);
+    function calculateMaxRunes() {
+      const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
+      const targetRune = targetSelectInventory.value;
+      let maxCraftable = 0;
 
-  const targetRuneName = runes[targetRuneIndex];
-  let maxCraftable = 0;
+      for (let i = 0; i < runeCounts.length - 1; i++) {
+        const craftable = Math.floor(runeCounts[i] / 3);
+        runeCounts[i + 1] += craftable;
+        runeCounts[i] %= 3;
+      }
 
-  // Clone runeCounts to perform crafting simulation
-  const tempRuneCounts = [...runeCounts];
+      if (targetRune === "highest") {
+        maxCraftable = runeCounts[runeCounts.length - 1];
+      } else {
+        maxCraftable = runeCounts[parseInt(targetRune)];
+      }
 
-  // Calculate craftable runes ignoring pre-existing target runes
-  tempRuneCounts[targetRuneIndex] = 0; // Ignore existing target runes during calculation
+      const remainingInventory = runes
+        .map((rune, index) => ({ rune, count: runeCounts[index] }))
+        .filter(item => item.count > 0)
+        .map(item => `${item.rune}: ${item.count}`)
+        .join(', ');
 
-  for (let i = 0; i < tempRuneCounts.length - 1; i++) {
-    const craftable = Math.floor(tempRuneCounts[i] / 3);
-    tempRuneCounts[i + 1] += craftable;
-    tempRuneCounts[i] %= 3;
-  }
+      const showRemaining = document.getElementById("show-remaining").checked;
+      const resultText = showRemaining
+        ? `You can craft ${maxCraftable} runes. Remaining Runes: ${remainingInventory}`
+        : `You can craft ${maxCraftable} runes.`;
 
-  maxCraftable = tempRuneCounts[targetRuneIndex];
-
-  // Remaining inventory after crafting
-  const remainingInventory = runes
-    .map((rune, index) => ({
-      rune,
-      count: index === targetRuneIndex ? runeCounts[index] : tempRuneCounts[index], // Use original count for target rune
-    }))
-    .filter(item => item.count > 0)
-    .map(item => `${item.rune}: ${item.count}`)
-    .join(', ');
-
-  const showRemaining = document.getElementById("show-remaining").checked;
-  const resultText = showRemaining
-    ? `You can craft ${maxCraftable} ${targetRuneName} runes. Remaining Runes: ${remainingInventory}`
-    : `You can craft ${maxCraftable} ${targetRuneName} runes.`;
-
-  document.getElementById("inventory-result").textContent = resultText;
-}
+      document.getElementById("inventory-result").textContent = resultText;
+    }
   </script>
 </body>
 </html>
