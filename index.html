@@ -229,51 +229,52 @@
 	function calculateMaxRunes() {
 	  const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
 	  const targetRuneIndex = targetSelectInventory.value === "highest"
-	    ? runeCounts.length - 1
-	    : parseInt(targetSelectInventory.value);
-	
+		? runeCounts.length - 1
+		: parseInt(targetSelectInventory.value);
+
 	  const targetRuneName = runes[targetRuneIndex];
 	  let maxCraftable = 0;
-	
+
 	  // Clone runeCounts to perform crafting simulation
 	  const tempRuneCounts = [...runeCounts];
-	
+
 	  // Ignore existing target runes during calculation
 	  const preExistingTargetRunes = tempRuneCounts[targetRuneIndex];
 	  tempRuneCounts[targetRuneIndex] = 0;
-	
-	  // Craft runes step by step
+
+	  // Craft runes step by step, starting from the lowest rune
 	  for (let i = 0; i < targetRuneIndex; i++) {
-	    const craftable = Math.floor(tempRuneCounts[i] / 3); // Calculate how many runes can be crafted to the next level
-	    tempRuneCounts[i + 1] += craftable; // Add crafted runes to the next level
-	    tempRuneCounts[i] %= 3; // Update remaining runes at the current level
-	
-	    // Stop crafting if we reach the target rune
-	    if (i + 1 === targetRuneIndex) {
-	      maxCraftable = tempRuneCounts[targetRuneIndex];
-	      break;
-	    }
+		// How many runes can we craft from the current level?
+		const craftable = Math.floor(tempRuneCounts[i] / 3);
+		tempRuneCounts[i + 1] += craftable; // Add the crafted runes to the next level
+		tempRuneCounts[i] %= 3; // Update remaining runes at the current level
+
+		// Stop crafting if we reach the target rune
+		if (i + 1 === targetRuneIndex) {
+		  maxCraftable = tempRuneCounts[targetRuneIndex];
+		}
 	  }
-	
+
 	  // Add back pre-existing target runes to the remaining inventory for display
 	  tempRuneCounts[targetRuneIndex] += preExistingTargetRunes;
-	
+
 	  // Remaining inventory after crafting
 	  const remainingInventory = runes
-	    .map((rune, index) => ({
-	      rune,
-	      count: tempRuneCounts[index],
-	    }))
-	    .filter(item => item.count > 0)
-	    .map(item => `${item.rune}: ${item.count}`)
-	    .join(', ');
-	
+		.map((rune, index) => ({
+		  rune,
+		  count: tempRuneCounts[index],
+		}))
+		.filter(item => item.count > 0)
+		.map(item => `${item.rune}: ${item.count}`)
+		.join(', ');
+
 	  const showRemaining = document.getElementById("show-remaining").checked;
 	  const resultText = showRemaining
-	    ? `You can craft ${maxCraftable} ${targetRuneName} runes. Remaining Runes: ${remainingInventory}`
-	    : `You can craft ${maxCraftable} ${targetRuneName} runes.`;
-	
+		? `You can craft ${maxCraftable} ${targetRuneName} runes. Remaining Runes: ${remainingInventory}`
+		: `You can craft ${maxCraftable} ${targetRuneName} runes.`;
+
 	  document.getElementById("inventory-result").textContent = resultText;
 	}
+  </script>
 </body>
 </html>
