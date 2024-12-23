@@ -23,7 +23,7 @@
       text-align: center;
       margin-bottom: 15px;
       color: #FFFFFF;
-      font-size: 40px;
+      font-size: 22px;
     }
 
     .container {
@@ -95,6 +95,7 @@
       background-color: #484856;
       color: #FFFFFF;
       border: 1px solid #373747;
+      max="999";
     }
 
     .checkbox-container label {
@@ -110,26 +111,45 @@
       color: #D4D4D4;
       background-color: transparent;
     }
+
+    /* Mobile view adjustments */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .calculator, .explanation, .inventory-calculator {
+        max-width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .inventory-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>Hero Siege Rune Calculator</h1>
 
   <div class="container">
-    <!-- Explanation Section -->
     <div class="explanation">
       <h2>What does this tool do?</h2>
-      <p>This tool helps you efficiently manage and combine runes in <strong>Hero Siege</strong>.</p>
+      <p>This tool helps you efficiently manage and combine runes in the game <strong>Hero Siege</strong>.</p>
       <p>It has two main sections:</p>
       <ul>
         <li><strong>Rune Calculator:</strong> Select a starting rune and a target rune to calculate how many runes you need to craft the target rune.</li>
         <br>
-		<li><strong>Inventory Rune Calculator:</strong> Enter your current rune inventory to see how many target runes you can craft.</li>
+        <li><strong>Inventory Rune Calculator:</strong> Enter your current rune inventory to see how many target runes you can craft.</li>
       </ul>
       <p>With the "Show Remaining Runes" option, you can also see the leftover runes after the maximum number of target runes has been crafted.</p>
     </div>
 
-    <!-- Simple Rune Calculator -->
     <div class="calculator">
       <h2>Rune Calculator</h2>
       <label for="start-rune">Select Starting Rune:</label>
@@ -142,7 +162,6 @@
       <div class="result" id="result"></div>
     </div>
 
-    <!-- Inventory Rune Calculator -->
     <div class="inventory-calculator">
       <h2>Inventory Rune Calculator</h2>
       <div class="inventory-grid" id="inventory-inputs"></div>
@@ -159,7 +178,6 @@
     </div>
   </div>
 
-  <!-- Footer Section -->
   <div class="footer">
     made by jewome
   </div>
@@ -172,7 +190,6 @@
       "Jah", "Drax", "Zed"
     ];
 
-    // Populate dropdowns
     const startRuneSelect = document.getElementById("start-rune");
     const targetRuneSelect = document.getElementById("target-rune");
     const targetSelectInventory = document.getElementById("target-select");
@@ -226,55 +243,36 @@
       inventoryInputs.appendChild(inputDiv);
     });
 
-	function calculateMaxRunes() {
-	  const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
-	  const targetRuneIndex = targetSelectInventory.value === "highest"
-		? runeCounts.length - 1
-		: parseInt(targetSelectInventory.value);
+    function calculateMaxRunes() {
+      const runeCounts = runes.map((_, index) => parseInt(document.getElementById(`rune-${index}`).value) || 0);
+      const targetRune = targetSelectInventory.value;
+      let maxCraftable = 0;
 
-	  const targetRuneName = runes[targetRuneIndex];
-	  let maxCraftable = 0;
+      for (let i = 0; i < runeCounts.length - 1; i++) {
+        const craftable = Math.floor(runeCounts[i] / 3);
+        runeCounts[i + 1] += craftable;
+        runeCounts[i] %= 3;
+      }
 
-	  // Clone runeCounts to perform crafting simulation
-	  const tempRuneCounts = [...runeCounts];
+      if (targetRune === "highest") {
+        maxCraftable = runeCounts[runeCounts.length - 1];
+      } else {
+        maxCraftable = runeCounts[parseInt(targetRune)];
+      }
 
-	  // Ignore existing target runes during calculation
-	  const preExistingTargetRunes = tempRuneCounts[targetRuneIndex];
-	  tempRuneCounts[targetRuneIndex] = 0;
+      const remainingInventory = runes
+        .map((rune, index) => ({ rune, count: runeCounts[index] }))
+        .filter(item => item.count > 0)
+        .map(item => `${item.rune}: ${item.count}`)
+        .join(', ');
 
-	  // Craft runes step by step, starting from the lowest rune
-	  for (let i = 0; i < targetRuneIndex; i++) {
-		// How many runes can we craft from the current level?
-		const craftable = Math.floor(tempRuneCounts[i] / 3);
-		tempRuneCounts[i + 1] += craftable; // Add the crafted runes to the next level
-		tempRuneCounts[i] %= 3; // Update remaining runes at the current level
+      const showRemaining = document.getElementById("show-remaining").checked;
+      const resultText = showRemaining
+        ? `You can craft ${maxCraftable} runes. Remaining Runes: ${remainingInventory}`
+        : `You can craft ${maxCraftable} runes.`;
 
-		// Stop crafting if we reach the target rune
-		if (i + 1 === targetRuneIndex) {
-		  maxCraftable = tempRuneCounts[targetRuneIndex];
-		}
-	  }
-
-	  // Add back pre-existing target runes to the remaining inventory for display
-	  tempRuneCounts[targetRuneIndex] += preExistingTargetRunes;
-
-	  // Remaining inventory after crafting
-	  const remainingInventory = runes
-		.map((rune, index) => ({
-		  rune,
-		  count: tempRuneCounts[index],
-		}))
-		.filter(item => item.count > 0)
-		.map(item => `${item.rune}: ${item.count}`)
-		.join(', ');
-
-	  const showRemaining = document.getElementById("show-remaining").checked;
-	  const resultText = showRemaining
-		? `You can craft ${maxCraftable} ${targetRuneName} runes. Remaining Runes: ${remainingInventory}`
-		: `You can craft ${maxCraftable} ${targetRuneName} runes.`;
-
-	  document.getElementById("inventory-result").textContent = resultText;
-	}
+      document.getElementById("inventory-result").textContent = resultText;
+    }
   </script>
 </body>
 </html>
